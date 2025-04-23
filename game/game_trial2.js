@@ -12,8 +12,8 @@ function setup (){
   createCanvas (600,600);
   textAlign(CENTER);
   img = loadImage ('https://ajratley.github.io/images/beetle.png');
-  img2 = loadImage ('leaf.png');
-  img3 = loadImage ('ladybug.png');
+  img2 = loadImage ('https://ajratley.github.io/game/leaf.png');
+  img3 = loadImage ('https://ajratley.github.io/game/ladybug.png');
 
 } // end of set up
 
