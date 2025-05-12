@@ -107,37 +107,37 @@ function extra(){
 function mousePressed() {
   if (gameState === 'hair' || 'eyes' || 'mouth' || 'nose' || 'extra' 
   ) {
-    if (mouseX >= 960 && mouseX <= 1110 && mouseY >= 122 && mouseY <= 272) {
+    if (mouseX >= 480 && mouseX <= 555 && mouseY >= 61 && mouseY <= 136) {
       gameState = 'face';
     }
   }
   if (gameState === 'face' || 'eyes' || 'mouth' || 'nose' || 'extra' 
   ) {
-    if (mouseX >= 1110 && mouseX <= 1260 && mouseY >= 122 && mouseY <= 272) {
+    if (mouseX >= 555 && mouseX <= 630 && mouseY >= 61 && mouseY <= 136) {
       gameState = 'hair';
     }
   }
   if (gameState === 'hair' || 'face' || 'mouth' || 'nose' || 'extra' 
   ) {
-    if (mouseX >= 1260 && mouseX <= 1410 && mouseY >= 122 && mouseY <= 272) {
+    if (mouseX >= 630 && mouseX <= 705 && mouseY >= 61 && mouseY <= 136) {
       gameState = 'eyes';
     }
   }
   if (gameState === 'hair' || 'eyes' || 'face' || 'nose' || 'extra' 
   ) {
-    if (mouseX >= 1410 && mouseX <= 1560 && mouseY >= 122 && mouseY <= 272) {
+    if (mouseX >= 705 && mouseX <= 780 && mouseY >= 61 && mouseY <= 136) {
       gameState = 'mouth';
     }
   }
   if (gameState === 'hair' || 'eyes' || 'mouth' || 'face' || 'extra' 
   ) {
-    if (mouseX >= 1560 && mouseX <= 1710 && mouseY >= 122 && mouseY <= 272) {
+    if (mouseX >= 780 && mouseX <= 855 && mouseY >= 61 && mouseY <= 136) {
       gameState = 'nose';
     }
   }
   if (gameState === 'hair' || 'eyes' || 'mouth' || 'nose' || 'face' 
   ) {
-    if (mouseX >= 1710 && mouseX <= 1860 && mouseY >= 122 && mouseY <= 272) {
+    if (mouseX >= 855 && mouseX <= 930 && mouseY >= 61 && mouseY <= 136) {
       gameState = 'extra';
     }
   }
