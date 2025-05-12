@@ -10,7 +10,7 @@ let bg5;
 let bg6;
 
 function preload(){
-customFont= loadFont ('assets/font1.ttf');
+customFont= loadFont ('https://ajratley.github.io/final_project/assets/font1.ttf');
 bg1 = loadImage('https://ajratley.github.io/final_project/assets/Asset%201.png');
 bg2 = loadImage('https://ajratley.github.io/final_project/assets/Asset%202.png');
 bg3 = loadImage('https://ajratley.github.io/final_project/assets/Asset%203.png');
@@ -21,7 +21,7 @@ bg6 = loadImage('https://ajratley.github.io/final_project/assets/Asset%205.png')
 
 
 function setup (){
-createCanvas (1920,1080);
+createCanvas (960,540);
 background(75,60,150);
 textFont(customFont);
 }
@@ -58,17 +58,17 @@ function draw () {
 
 
 function start(){
-    textSize(180);
+    textSize(100);
     stroke(255);
     fill(255);
     textAlign(CENTER,CENTER)
-    text('Create Your Avatar', width / 2, 300);
+    text('Create Your Avatar', width / 2, 150);
 
     if (!button) {
         button = createButton('play');
-        button.position(width/2-125, height/2+60);
-        button.size(250, 120);
-        button.style('font-size', '75px');
+        button.position(width/2-50, height/2+25);
+        button.size(100,60);
+        button.style('font-size', '40px');
         button.class('custom-font');
         button.mousePressed(() => {
             gameState = 'face';
