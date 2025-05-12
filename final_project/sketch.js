@@ -2,20 +2,26 @@ let gameState = 'start';
 let customFont;
 let button;
 
-let face;
-let hair;
-let eyes;
-let mouth;
-let extra;
+let bg1;
+let bg2;
+let bg3;
+let bg4;
+let bg5;
+let bg6;
 
 function preload(){
 customFont= loadFont ('assets/font1.ttf');
-face = loadImage();
+bg1 = loadImage('https://ajratley.github.io/final_project/assets/Asset%201.png');
+bg2 = loadImage('https://ajratley.github.io/final_project/assets/Asset%202.png');
+bg3 = loadImage('https://ajratley.github.io/final_project/assets/Asset%203.png');
+bg4 = loadImage('https://ajratley.github.io/final_project/assets/Asset%204.png');
+bg5 = loadImage('https://ajratley.github.io/final_project/assets/Asset%206.png');
+bg6 = loadImage('https://ajratley.github.io/final_project/assets/Asset%205.png');
 }
 
 
 function setup (){
-createCanvas (1000,600);
+createCanvas (1920,1080);
 background(75,60,150);
 textFont(customFont);
 }
@@ -37,6 +43,9 @@ function draw () {
       else if (gameState == 'mouth') {
         mouth();
       }
+      else if (gameState == 'nose') {
+        nose();
+      }
       else if (gameState == 'extra') {
         extra();
       }
@@ -49,17 +58,17 @@ function draw () {
 
 
 function start(){
-    textSize(100);
+    textSize(180);
     stroke(255);
     fill(255);
     textAlign(CENTER,CENTER)
-    text('Create Your Avatar', width / 2, 200);
+    text('Create Your Avatar', width / 2, 300);
 
     if (!button) {
         button = createButton('play');
-        button.position(450, 400);
-        button.size(100, 50);
-        button.style('font-size', '24px');
+        button.position(width/2-125, height/2+60);
+        button.size(250, 120);
+        button.style('font-size', '75px');
         button.class('custom-font');
         button.mousePressed(() => {
             gameState = 'face';
@@ -70,23 +79,66 @@ function start(){
 }
 
 function face(){
-    background(75,60,150);
-
+  background(bg1);
+ 
 }
 
 function hair(){
-  background(75,60,150);
+  background(bg2);
 
 }
 function eyes(){
-  background(75,60,150);
+  background(bg3);
 
 }
 function mouth(){
-  background(75,60,150);
+  background(bg4);
+
+}
+function nose(){
+  background(bg5);
 
 }
 function extra(){
-  background(75,60,150);
+  background(bg6);
 
+}
+
+function mousePressed() {
+  if (gameState === 'hair' || 'eyes' || 'mouth' || 'nose' || 'extra' 
+  ) {
+    if (mouseX >= 960 && mouseX <= 1110 && mouseY >= 122 && mouseY <= 272) {
+      gameState = 'face';
+    }
+  }
+  if (gameState === 'face' || 'eyes' || 'mouth' || 'nose' || 'extra' 
+  ) {
+    if (mouseX >= 1110 && mouseX <= 1260 && mouseY >= 122 && mouseY <= 272) {
+      gameState = 'hair';
+    }
+  }
+  if (gameState === 'hair' || 'face' || 'mouth' || 'nose' || 'extra' 
+  ) {
+    if (mouseX >= 1260 && mouseX <= 1410 && mouseY >= 122 && mouseY <= 272) {
+      gameState = 'eyes';
+    }
+  }
+  if (gameState === 'hair' || 'eyes' || 'face' || 'nose' || 'extra' 
+  ) {
+    if (mouseX >= 1410 && mouseX <= 1560 && mouseY >= 122 && mouseY <= 272) {
+      gameState = 'mouth';
+    }
+  }
+  if (gameState === 'hair' || 'eyes' || 'mouth' || 'face' || 'extra' 
+  ) {
+    if (mouseX >= 1560 && mouseX <= 1710 && mouseY >= 122 && mouseY <= 272) {
+      gameState = 'nose';
+    }
+  }
+  if (gameState === 'hair' || 'eyes' || 'mouth' || 'nose' || 'face' 
+  ) {
+    if (mouseX >= 1710 && mouseX <= 1860 && mouseY >= 122 && mouseY <= 272) {
+      gameState = 'extra';
+    }
+  }
 }
