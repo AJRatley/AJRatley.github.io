@@ -3,10 +3,14 @@ let customFont;
 let button;
 let selectedFace = null;
 let selectedHair = null;
+let selectedEyebrows = null;
 let selectedEyes = null;
 let selectedMouth = null;
 let selectedNose = null;
 let selectedExtra = null;
+
+let downloadButton;
+let restartButton;
 
 let bg1;
 let bg2;
@@ -15,7 +19,19 @@ let bg4;
 let bg5;
 let bg6;
 
+let carly;
+let lilly;
+
 let assets = [];
+
+let extraAssetSettings = {
+  79: { x: 195, y: 220, w: 85, h: 30 },
+  80: { x: 200, y: 250, w: 60, h: 10 },
+  248: { x: 250, y: 210, w: 10, h: 10 },
+  289: { x: 220, y: 265, w: 10, h: 10 },
+  82: { x: 180, y: 175, w: 110, h: 85 },
+  81: { x: 195, y: 300, w: 75, h: 70 },
+};
 
 function preload(){
 customFont= loadFont ('https://ajratley.github.io/final_project/assets/font1.ttf');
@@ -26,8 +42,11 @@ bg4 = loadImage('https://ajratley.github.io/final_project/assets/Asset%204.png')
 bg5 = loadImage('https://ajratley.github.io/final_project/assets/Asset%206.png');
 bg6 = loadImage('https://ajratley.github.io/final_project/assets/Asset%205.png');
 
-  for (let i = 1; i < 273; i++) {
-    let filename = 'assets/Asset%20' + i + '.png';
+carly = loadImage('assets/Carly.png');
+lilly = loadImage('assets/lilly.png');
+
+  for (let i = 1; i < 290; i++) {
+    let filename = 'https://ajratley.github.io/final_project/assets/Asset%20' + i + '.png';
     assets[i] = loadImage(filename);
   }
 
@@ -70,34 +89,48 @@ function draw () {
 
 if (gameState !== 'start' && gameState !== 'end') {
     if (selectedHair !== null && assets[selectedHair]) {
-    image(assets[selectedHair], 175, 175);
+    image(assets[selectedHair], 170, 165,assets[selectedHair].width*1.3,assets[selectedHair].height*1.3);
   }
   if (selectedFace !== null && assets[selectedFace]) {
     image(assets[selectedFace], 175, 175);
   }
+  if (selectedEyebrows !== null && assets[selectedEyebrows]) {
+    image(assets[selectedEyebrows], 195, 210,75,10);
+  }
   if (selectedEyes !== null && assets[selectedEyes]) {
     image(assets[selectedEyes], 238, 225, 28,18);
+    image(assets[selectedEyes], 198, 225, 28,18);
   }
   if (selectedMouth !== null && assets[selectedMouth]) {
-    image(assets[selectedMouth], 175, 175);
+    image(assets[selectedMouth], 210, 280,assets[selectedMouth].width/4,assets[selectedMouth].height/4);
   }
   if (selectedNose !== null && assets[selectedNose]) {
-    image(assets[selectedNose], 175, 175);
+    image(assets[selectedNose], 220, 248,assets[selectedNose].width/4, assets[selectedNose].height/4);
   }
-  if (selectedExtra !== null && assets[selectedExtra]) {
-    image(assets[selectedExtra], 175, 175);
-  }
+if (selectedExtra !== null && assets[selectedExtra]) {
+  let config = extraAssetSettings[selectedExtra];
+  if (config) {
+    image(assets[selectedExtra], config.x, config.y, config.w, config.h);
+  } 
 }
+}
+
+if (gameState !== 'end' && downloadButton) {
+  downloadButton.remove();
+  downloadButton = null;
+}
+
     } 
 
 
 
 function start(){
+  background(75,60,150);
     textSize(100);
     stroke(255);
     fill(255);
     textAlign(CENTER,CENTER)
-    text('Create Your Avatar', width / 2, 150);
+    text('Mini Me', width / 2, 150);
 
     if (!button) {
         button = createButton('play');
@@ -111,6 +144,9 @@ function start(){
             button = null; 
         });
     }
+
+    image(carly, 100,250,150,200);
+    image(lilly, 700,250,150,200);
 }
 
 function face(){
@@ -137,6 +173,82 @@ function nose(){
 function extra(){
   background(bg6);
 
+}
+function end() {
+  background(100,180,200);
+
+    textSize(100);
+    stroke(255);
+    fill(255);
+    textAlign(CENTER,CENTER)
+    text('Mini Me', width / 2, 100);
+
+  // Draw only the final avatar
+  if (selectedHair && assets[selectedHair]) {
+    image(assets[selectedHair], 170, 165, assets[selectedHair].width * 1.3, assets[selectedHair].height * 1.3);
+  }
+  if (selectedFace && assets[selectedFace]) {
+    image(assets[selectedFace], 175, 175);
+  }
+  if (selectedEyebrows && assets[selectedEyebrows]) {
+    image(assets[selectedEyebrows], 195, 210, 75, 10);
+  }
+  if (selectedEyes && assets[selectedEyes]) {
+    image(assets[selectedEyes], 238, 225, 28, 18);
+    image(assets[selectedEyes], 198, 225, 28, 18);
+  }
+  if (selectedMouth && assets[selectedMouth]) {
+    image(assets[selectedMouth], 210, 280, assets[selectedMouth].width / 4, assets[selectedMouth].height / 4);
+  }
+  if (selectedNose && assets[selectedNose]) {
+    image(assets[selectedNose], 220, 248, assets[selectedNose].width / 4, assets[selectedNose].height / 4);
+  }
+  if (selectedExtra && assets[selectedExtra]) {
+    let config = extraAssetSettings[selectedExtra];
+    if (config) {
+      image(assets[selectedExtra], config.x, config.y, config.w, config.h);
+    }
+  }
+
+  // Create the download button once
+  if (!downloadButton) {
+    downloadButton = createButton('Download Avatar');
+    downloadButton.position(230, 400);
+    downloadButton.size(150, 40);
+    downloadButton.style('font-size', '18px');
+    downloadButton.mousePressed(() => {
+      saveCanvas('my-avatar', 'png');
+    });
+  }
+    if (!restartButton) {
+    restartButton = createButton('Restart');
+    restartButton.position(580, 400);
+    restartButton.size(150, 40);
+    restartButton.style('font-size', '18px');
+    restartButton.mousePressed(() => {
+      // Reset selections
+      selectedFace = null;
+      selectedHair = null;
+      selectedEyebrows = null;
+      selectedEyes = null;
+      selectedMouth = null;
+      selectedNose = null;
+      selectedExtra = null;
+
+      // Change game state
+      gameState = 'start';
+
+      // Remove buttons
+      if (downloadButton) {
+        downloadButton.remove();
+        downloadButton = null;
+      }
+      if (restartButton) {
+        restartButton.remove();
+        restartButton = null;
+      }
+    });
+  }
 }
 
 function mousePressed() {
@@ -176,6 +288,12 @@ function mousePressed() {
     if (mouseX >= 855 && mouseX <= 930 && mouseY >= 61 && mouseY <= 136) {
       gameState = 'extra';
     }
+
+    if (gameState === 'hair' || 'eyes' || 'mouth' || 'nose' || 'face' || 'extra') {
+  if (mouseX >= 50 && mouseX <= 450 && mouseY >= 50 && mouseY <= 400) {
+    gameState = 'end';
+  }
+}
   }
 
 
@@ -196,20 +314,26 @@ function mousePressed() {
     }
   }
 
-  // --- HAIR SELECTION ---
+  // --- HAIR and EYEBROW SELECTION ---
   if (gameState === 'hair') {
     if (mouseX >= 507 && mouseX <= 623 && mouseY >= 175 && mouseY <= 290) {
       selectedHair = 254;
+    selectedEyebrows = 288;
     } else if (mouseX >= 647 && mouseX <= 763 && mouseY >= 175 && mouseY <= 290) {
       selectedHair = 253;
+    selectedEyebrows = 288;
     } else if (mouseX >= 787 && mouseX <= 903 && mouseY >= 175 && mouseY <= 290) {
       selectedHair = 250;
+    selectedEyebrows = 288;
     } else if (mouseX >= 507 && mouseX <= 623 && mouseY >= 325 && mouseY <= 440) {
       selectedHair = 252;
+    selectedEyebrows = 288;
     } else if (mouseX >= 647 && mouseX <= 763 && mouseY >= 325 && mouseY <= 440) {
       selectedHair = 251;
+    selectedEyebrows = 288;
     } else if (mouseX >= 787 && mouseX <= 903 && mouseY >= 325 && mouseY <= 440) {
       selectedHair = 249;
+    selectedEyebrows = 288;
     }
   }
 
@@ -263,13 +387,13 @@ function mousePressed() {
     } else if (mouseX >= 647 && mouseX <= 763 && mouseY >= 175 && mouseY <= 290) {
       selectedExtra = 80;
     } else if (mouseX >= 787 && mouseX <= 903 && mouseY >= 175 && mouseY <= 290) {
-      selectedExtra = 81;
+      selectedExtra = 248;
     } else if (mouseX >= 507 && mouseX <= 623 && mouseY >= 325 && mouseY <= 440) {
-      selectedExtra = 82;
+      selectedExtra = 289;
     } else if (mouseX >= 647 && mouseX <= 763 && mouseY >= 325 && mouseY <= 440) {
-      selectedExtra = 248;
+      selectedExtra = 82;
     } else if (mouseX >= 787 && mouseX <= 903 && mouseY >= 325 && mouseY <= 440) {
-      selectedExtra = 248;
+      selectedExtra = 81;
     }
   }
 
@@ -383,206 +507,364 @@ function mousePressed() {
   }
 
 
+
+
     // HAIR COLOURS
-else if (selectedHair === 254 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 72;
-} else if (selectedHair === 254 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 66;
-} else if (selectedHair === 254 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 60;
-} else if (selectedHair === 254 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 54;
-} else if (selectedHair === 254 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 48;
-} else if (selectedHair === 254 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 42;
-} else if (selectedHair === 254 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 36;
-} else if (selectedHair === 254 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 30;
-} else if (selectedHair === 254 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 272;
-} else if (selectedHair === 254 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 266;
-} else if (selectedHair === 254 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 260;
-} else if (selectedHair === 254 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 254;
-} else if (selectedHair === 254 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 24;
-} else if (selectedHair === 254 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 18;
-} else if (selectedHair === 254 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 12;
-} else if (selectedHair === 254 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 78;
+if (selectedHair === 254 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) selectedHair = 72;
+if (selectedHair === 254 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) selectedHair = 66;
+if (selectedHair === 254 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) selectedHair = 60;
+if (selectedHair === 254 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) selectedHair = 54;
+if (selectedHair === 254 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) selectedHair = 48;
+if (selectedHair === 254 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) selectedHair = 42;
+if (selectedHair === 254 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) selectedHair = 36;
+if (selectedHair === 254 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) selectedHair = 30;
+if (selectedHair === 254 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) selectedHair = 272;
+if (selectedHair === 254 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) selectedHair = 266;
+if (selectedHair === 254 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) selectedHair = 260;
+if (selectedHair === 254 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) selectedHair = 254;
+if (selectedHair === 254 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) selectedHair = 24;
+if (selectedHair === 254 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) selectedHair = 18;
+if (selectedHair === 254 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) selectedHair = 12;
+if (selectedHair === 254 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) selectedHair = 78;
+
+if (selectedHair === 253 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) selectedHair = 71;
+if (selectedHair === 253 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) selectedHair = 65;
+if (selectedHair === 253 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) selectedHair = 59;
+if (selectedHair === 253 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) selectedHair = 53;
+if (selectedHair === 253 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) selectedHair = 47;
+if (selectedHair === 253 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) selectedHair = 41;
+if (selectedHair === 253 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) selectedHair = 35;
+if (selectedHair === 253 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) selectedHair = 29;
+if (selectedHair === 253 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) selectedHair = 271;
+if (selectedHair === 253 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) selectedHair = 265;
+if (selectedHair === 253 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) selectedHair = 259;
+if (selectedHair === 253 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) selectedHair = 253;
+if (selectedHair === 253 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) selectedHair = 23;
+if (selectedHair === 253 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) selectedHair = 17;
+if (selectedHair === 253 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) selectedHair = 11;
+if (selectedHair === 253 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) selectedHair = 77;
+
+if (selectedHair === 252 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) selectedHair = 70;
+if (selectedHair === 252 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) selectedHair = 64;
+if (selectedHair === 252 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) selectedHair = 58;
+if (selectedHair === 252 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) selectedHair = 52;
+if (selectedHair === 252 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) selectedHair = 46;
+if (selectedHair === 252 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) selectedHair = 40;
+if (selectedHair === 252 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) selectedHair = 34;
+if (selectedHair === 252 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) selectedHair = 28;
+if (selectedHair === 252 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) selectedHair = 270;
+if (selectedHair === 252 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) selectedHair = 264;
+if (selectedHair === 252 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) selectedHair = 258;
+if (selectedHair === 252 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) selectedHair = 252;
+if (selectedHair === 252 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) selectedHair = 22;
+if (selectedHair === 252 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) selectedHair = 16;
+if (selectedHair === 252 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) selectedHair = 10;
+if (selectedHair === 252 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) selectedHair = 76;
+
+if (selectedHair === 251 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) selectedHair = 69;
+if (selectedHair === 251 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) selectedHair = 63;
+if (selectedHair === 251 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) selectedHair = 57;
+if (selectedHair === 251 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) selectedHair = 51;
+if (selectedHair === 251 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) selectedHair = 45;
+if (selectedHair === 251 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) selectedHair = 39;
+if (selectedHair === 251 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) selectedHair = 33;
+if (selectedHair === 251 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) selectedHair = 27;
+if (selectedHair === 251 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) selectedHair = 269;
+if (selectedHair === 251 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) selectedHair = 263;
+if (selectedHair === 251 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) selectedHair = 257;
+if (selectedHair === 251 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) selectedHair = 251;
+if (selectedHair === 251 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) selectedHair = 21;
+if (selectedHair === 251 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) selectedHair = 15;
+if (selectedHair === 251 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) selectedHair = 9;
+if (selectedHair === 251 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) selectedHair = 75;
+
+if (selectedHair === 250 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) selectedHair = 68;
+if (selectedHair === 250 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) selectedHair = 62;
+if (selectedHair === 250 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) selectedHair = 56;
+if (selectedHair === 250 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) selectedHair = 50;
+if (selectedHair === 250 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) selectedHair = 44;
+if (selectedHair === 250 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) selectedHair = 38;
+if (selectedHair === 250 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) selectedHair = 32;
+if (selectedHair === 250 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) selectedHair = 26;
+if (selectedHair === 250 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) selectedHair = 268;
+if (selectedHair === 250 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) selectedHair = 262;
+if (selectedHair === 250 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) selectedHair = 256;
+if (selectedHair === 250 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) selectedHair = 250;
+if (selectedHair === 250 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) selectedHair = 20;
+if (selectedHair === 250 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) selectedHair = 14;
+if (selectedHair === 250 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) selectedHair = 8;
+if (selectedHair === 250 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) selectedHair = 74;
+
+if (selectedHair === 249 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) selectedHair = 67;
+if (selectedHair === 249 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) selectedHair = 61;
+if (selectedHair === 249 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) selectedHair = 55;
+if (selectedHair === 249 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) selectedHair = 49;
+if (selectedHair === 249 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) selectedHair = 43;
+if (selectedHair === 249 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) selectedHair = 37;
+if (selectedHair === 249 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) selectedHair = 31;
+if (selectedHair === 249 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) selectedHair = 25;
+if (selectedHair === 249 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) selectedHair = 267;
+if (selectedHair === 249 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) selectedHair = 261;
+if (selectedHair === 249 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) selectedHair = 255;
+if (selectedHair === 249 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) selectedHair = 249;
+if (selectedHair === 249 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) selectedHair = 19;
+if (selectedHair === 249 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) selectedHair = 13;
+if (selectedHair === 249 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) selectedHair = 7;
+if (selectedHair === 249 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) selectedHair = 73;
+
+// EYEBROWS
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyebrows = 273;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyebrows = 280;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyebrows = 279;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyebrows = 278;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyebrows = 277;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyebrows = 282;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyebrows = 281;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyebrows = 287;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyebrows = 276;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyebrows = 275;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyebrows = 274;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyebrows = 288;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyebrows = 286;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyebrows = 285;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyebrows = 284;
+}
+if ((selectedHair >= 7 && selectedHair <= 272) && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyebrows = 283;
 }
 
-else if (selectedHair === 253 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 71;
-} else if (selectedHair === 253 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 65;
-} else if (selectedHair === 253 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 59;
-} else if (selectedHair === 253 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 53;
-} else if (selectedHair === 253 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 47;
-} else if (selectedHair === 253 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 41;
-} else if (selectedHair === 253 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 35;
-} else if (selectedHair === 253 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 29;
-} else if (selectedHair === 253 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 271;
-} else if (selectedHair === 253 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 265;
-} else if (selectedHair === 253 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 259;
-} else if (selectedHair === 253 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 253;
-} else if (selectedHair === 253 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 23;
-} else if (selectedHair === 253 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 17;
-} else if (selectedHair === 253 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 11;
-} else if (selectedHair === 253 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 77;
+//EYE COLOURS
+else if (selectedEyes === 243 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 195;
+} else if (selectedEyes === 243 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 237;
+} else if (selectedEyes === 243 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 231;
+} else if (selectedEyes === 243 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 225;
+} else if (selectedEyes === 243 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 219;
+} else if (selectedEyes === 243 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 213;
+} else if (selectedEyes === 243 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes= 207;
+} else if (selectedEyes === 243 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 201;
+} else if (selectedEyes === 243 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 135;
+} else if (selectedEyes === 243 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 129;
+} else if (selectedEyes === 243 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes= 123;
+} else if (selectedEyes === 243 && mouseX >= 180 && mouseX <= 230 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes= 117;
+}else if (selectedEyes === 243 && mouseX >= 230 && mouseX <= 280 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes= 111;
+}
+else if (selectedEyes === 241 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 193;
+} else if (selectedEyes === 241 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 235;
+} else if (selectedEyes === 241 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 229;
+} else if (selectedEyes === 241 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 223;
+} else if (selectedEyes === 241 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 217;
+} else if (selectedEyes === 241 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 211;
+} else if (selectedEyes === 241 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 205;
+} else if (selectedEyes === 241 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 199;
+} else if (selectedEyes === 241 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 133;
+} else if (selectedEyes === 241 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 127;
+} else if (selectedEyes === 241 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 121;
+} else if (selectedEyes === 241 && mouseX >= 180 && mouseX <= 230 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 115;
+} else if (selectedEyes === 241 && mouseX >= 230 && mouseX <= 280 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 109;
+}
+else if (selectedEyes === 240 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 192;
+} else if (selectedEyes === 240 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 234;
+} else if (selectedEyes === 240 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 228;
+} else if (selectedEyes === 240 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 222;
+} else if (selectedEyes === 240 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 216;
+} else if (selectedEyes === 240 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 210;
+} else if (selectedEyes === 240 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 204;
+} else if (selectedEyes === 240 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 198;
+} else if (selectedEyes === 240 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 132;
+} else if (selectedEyes === 240 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 126;
+} else if (selectedEyes === 240 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 120;
+} else if (selectedEyes === 240 && mouseX >= 180 && mouseX <= 230 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 114;
+} else if (selectedEyes === 240 && mouseX >= 230 && mouseX <= 280 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 108;
+}
+else if (selectedEyes === 242 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 194;
+} else if (selectedEyes === 242 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 236;
+} else if (selectedEyes === 242 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 230;
+} else if (selectedEyes === 242 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 224;
+} else if (selectedEyes === 242 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 218;
+} else if (selectedEyes === 242 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 212;
+} else if (selectedEyes === 242 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 206;
+} else if (selectedEyes === 242 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 200;
+} else if (selectedEyes === 242 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 134;
+} else if (selectedEyes === 242 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 128;
+} else if (selectedEyes === 242 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 122;
+} else if (selectedEyes === 242 && mouseX >= 180 && mouseX <= 230 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 116;
+} else if (selectedEyes === 242 && mouseX >= 230 && mouseX <= 280 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 110;
+}
+else if (selectedEyes === 239 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 191;
+} else if (selectedEyes === 239 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 233;
+} else if (selectedEyes === 239 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 227;
+} else if (selectedEyes === 239 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 221;
+} else if (selectedEyes === 239 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 215;
+} else if (selectedEyes === 239 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 209;
+} else if (selectedEyes === 239 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 203;
+} else if (selectedEyes === 239 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 197;
+} else if (selectedEyes === 239 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 131;
+} else if (selectedEyes === 239 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 125;
+} else if (selectedEyes === 239 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 119;
+} else if (selectedEyes === 239 && mouseX >= 180 && mouseX <= 230 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 113;
+} else if (selectedEyes === 39 && mouseX >= 230 && mouseX <= 280 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 107;
+}
+else if (selectedEyes === 238 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 190;
+} else if (selectedEyes === 238 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 232;
+} else if (selectedEyes === 238 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 226;
+} else if (selectedEyes === 238 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 220;
+} else if (selectedEyes === 238 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 214;
+} else if (selectedEyes === 238 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 208;
+} else if (selectedEyes === 238 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 202;
+} else if (selectedEyes === 238 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
+  selectedEyes = 196;
+} else if (selectedEyes === 238 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 130;
+} else if (selectedEyes === 238 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 124;
+} else if (selectedEyes === 238 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 118;
+} else if (selectedEyes === 238 && mouseX >= 180 && mouseX <= 230 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 112;
+} else if (selectedEyes === 238 && mouseX >= 230 && mouseX <= 280 && mouseY >= 467 && mouseY <= 547) {
+  selectedEyes = 106;
 }
 
-else if (selectedHair === 250 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 68;
-} else if (selectedHair === 250 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 62;
-} else if (selectedHair === 250 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 56;
-} else if (selectedHair === 250 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 50;
-} else if (selectedHair === 250 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 44;
-} else if (selectedHair === 250 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 38;
-} else if (selectedHair === 250 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 32;
-} else if (selectedHair === 250 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 26;
-} else if (selectedHair === 250 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 268;
-} else if (selectedHair === 250 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 262;
-} else if (selectedHair === 250 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 256;
-} else if (selectedHair === 250 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 250;
-} else if (selectedHair === 250 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 20;
-} else if (selectedHair === 250 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 14;
-} else if (selectedHair === 250 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 8;
-} else if (selectedHair === 250 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 74;
-}
-else if (selectedHair === 252 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 70;
-} else if (selectedHair === 252 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 64;
-} else if (selectedHair === 252 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 58;
-} else if (selectedHair === 252 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 52;
-} else if (selectedHair === 252 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 46;
-} else if (selectedHair === 252 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 40;
-} else if (selectedHair === 252 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 34;
-} else if (selectedHair === 252 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 28;
-} else if (selectedHair === 252 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 270;
-} else if (selectedHair === 252 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 264;
-} else if (selectedHair === 252 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 258;
-} else if (selectedHair === 252 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 252;
-} else if (selectedHair === 252 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 22;
-} else if (selectedHair === 252 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 16;
-} else if (selectedHair === 252 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 10;
-} else if (selectedHair === 252 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 76;
-}
 
-else if (selectedHair === 251 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 69;
-} else if (selectedHair === 251 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 63;
-} else if (selectedHair === 251 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 57;
-} else if (selectedHair === 251 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 51;
-} else if (selectedHair === 251 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 45;
-} else if (selectedHair === 251 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 39;
-} else if (selectedHair === 251 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 33;
-} else if (selectedHair === 251 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 27;
-} else if (selectedHair === 251 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 269;
-} else if (selectedHair === 251 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 263;
-} else if (selectedHair === 251 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 257;
-} else if (selectedHair === 251 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 251;
-} else if (selectedHair === 251 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 21;
-} else if (selectedHair === 251 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 15;
-} else if (selectedHair === 251 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 9;
-} else if (selectedHair === 251 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 75;
+//  lip color
+ else if (selectedMouth === 247 &&  mouseX >= 50 && mouseX <= 90 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 105;
+} else if (selectedMouth === 247 && mouseX >= 90 && mouseX <= 130 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 102;
+} else if (selectedMouth === 247 && mouseX >= 130 && mouseX <= 170 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 99;
+} else if (selectedMouth === 247 && mouseX >= 170 && mouseX <= 210 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 96;
+} else if (selectedMouth === 247 && mouseX >= 210 && mouseX <= 250 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 93;
+} else if (selectedMouth === 247 && mouseX >= 250 && mouseX <= 290 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 90;
 }
-else if (selectedHair === 249 && mouseX >= 68 && mouseX <= 108 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 67;
-} else if (selectedHair === 249 && mouseX >= 108 && mouseX <= 148 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 61;
-} else if (selectedHair === 249 && mouseX >= 148 && mouseX <= 180 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 55;
-} else if (selectedHair === 249 && mouseX >= 180 && mouseX <= 231 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 49;
-} else if (selectedHair === 249 && mouseX >= 231 && mouseX <= 272 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 43;
-} else if (selectedHair === 249 && mouseX >= 272 && mouseX <= 314 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 37;
-} else if (selectedHair === 249 && mouseX >= 314 && mouseX <= 355 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 31;
-} else if (selectedHair === 249 && mouseX >= 355 && mouseX <= 400 && mouseY >= 427 && mouseY <= 467) {
-  selectedHair = 25;
-} else if (selectedHair === 249 && mouseX >= 68 && mouseX <= 108 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 267;
-} else if (selectedHair === 249 && mouseX >= 108 && mouseX <= 148 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 261;
-} else if (selectedHair === 249 && mouseX >= 148 && mouseX <= 180 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 255;
-} else if (selectedHair === 249 && mouseX >= 180 && mouseX <= 231 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 249;
-} else if (selectedHair === 249 && mouseX >= 231 && mouseX <= 272 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 19;
-} else if (selectedHair === 249 && mouseX >= 272 && mouseX <= 314 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 13;
-} else if (selectedHair === 249 && mouseX >= 314 && mouseX <= 355 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 7;
-} else if (selectedHair === 249 && mouseX >= 355 && mouseX <= 400 && mouseY >= 467 && mouseY <= 547) {
-  selectedHair = 73;
+ else if (selectedMouth === 246 && mouseX >= 50 && mouseX <= 90 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 104;
+} else if (selectedMouth === 246 && mouseX >= 90 && mouseX <= 130 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 101;
+} else if (selectedMouth === 246 && mouseX >= 130 && mouseX <= 170 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 98;
+} else if (selectedMouth === 246 && mouseX >= 170 && mouseX <= 210 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 95;
+} else if (selectedMouth === 246 && mouseX >= 210 && mouseX <= 250 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 92;
+} else if (selectedMouth === 246 && mouseX >= 250 && mouseX <= 290 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 89;
+}
+ else if (selectedMouth === 245 && mouseX >= 50 && mouseX <= 90 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 103;
+} else if (selectedMouth === 245 && mouseX >= 90 && mouseX <= 130 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 100;
+} else if (selectedMouth === 245 && mouseX >= 130 && mouseX <= 170 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 97;
+} else if (selectedMouth === 245 && mouseX >= 170 && mouseX <= 210 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 94;
+} else if (selectedMouth === 245 && mouseX >= 210 && mouseX <= 250 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 91;
+} else if (selectedMouth === 245 && mouseX >= 250 && mouseX <= 290 && mouseY >= 427 && mouseY <= 467) {
+  selectedMouth = 88;
 }
 }
