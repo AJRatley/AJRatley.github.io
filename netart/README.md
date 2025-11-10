@@ -1,1 +1,0 @@
-# AJRatley.github.io
